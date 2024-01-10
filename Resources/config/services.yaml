@@ -1,0 +1,17 @@
+services:
+    Symfony\Component\DependencyInjection\ContainerInterface: '@service_container'
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Akyos\CanopeeModuleSDK\:
+        resource: './../../*'
+        tags: [ 'controller.service_arguments' ]
+        public: true
+
+    Akyos\CanopeeModuleSDK\EventListener\UserResolveListener:
+        arguments:
+            - '@App\Repository\UserRepository'
+        tags:
+            - { name: kernel.event_listener, event: league.oauth2_server.event.user_resolve, method: onUserResolve }
