@@ -5,6 +5,7 @@ namespace Akyos\CanopeeModuleSDK\Entity;
 use Akyos\CanopeeModuleSDK\Repository\UserTokenRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
+use App\Entity\User;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: UserTokenRepository::class)]
@@ -18,7 +19,7 @@ class UserToken
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'userTokens')]
-    private mixed $user = null;
+    private ?User $user = null;
 
     #[ORM\Column(type: Types::STRING, length: 1000, nullable: true)]
     protected ?string $accessToken = null;
