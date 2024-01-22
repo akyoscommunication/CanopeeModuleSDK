@@ -36,8 +36,10 @@ class ProviderService
         if($_SERVER['APP_ENV'] !== 'test') {
             $request = $this->request($query);
             try {
+                $request = $request->withAddedHeader('Content-Type', 'application/ld+json');
                 $response = $this->client->getResponse($request);
             } catch (Exception $e) {
+//                dd($e);
                 $this->refreshTokens();
                 $request = $this->request($query);
                 $response = $this->client->getResponse($request);
@@ -87,6 +89,7 @@ class ProviderService
     {
         $this->isInitialized();
 
+        $query->onPreQuery();
         $data = $this->get($query);
         $query->processData($data);
         return $query;

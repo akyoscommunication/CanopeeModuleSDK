@@ -10,6 +10,11 @@ class Get extends AbstractQuery
         $this->method = 'GET';
     }
 
+    public function onPreQuery(): void
+    {
+        // Blank method
+    }
+
     public function onSetData(): void
     {
         // Blank method

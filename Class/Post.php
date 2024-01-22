@@ -10,6 +10,11 @@ class Post extends AbstractQuery
         $this->method = 'POST';
     }
 
+    public function onPreQuery(): void
+    {
+        // Blank method
+    }
+
     public function onSetData(): void
     {
         // Blank method
