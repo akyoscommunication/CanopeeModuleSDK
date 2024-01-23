@@ -12,7 +12,7 @@ class Post extends AbstractQuery
 
     public function onPreQuery(): void
     {
-        // Blank method
+        $this->setHeaders(['Content-Type' => 'application/ld+json']);
     }
 
     public function onSetData(): void

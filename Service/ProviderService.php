@@ -36,7 +36,9 @@ class ProviderService
         if($_SERVER['APP_ENV'] !== 'test') {
             $request = $this->request($query);
             try {
-                $request = $request->withAddedHeader('Content-Type', 'application/ld+json');
+                foreach($query->getHeaders() as $key => $value) {
+                    $request = $request->withAddedHeader($key, $value);
+                }
                 $response = $this->client->getResponse($request);
             } catch (Exception $e) {
 //                dd($e);

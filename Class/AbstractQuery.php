@@ -17,6 +17,7 @@ abstract class AbstractQuery implements QueryInterface
     protected array $pathParams = [];
 
     protected array $body = [];
+    protected array $headers = [];
     protected mixed $results = null;
 
     public function processData($data): void
@@ -121,5 +122,17 @@ abstract class AbstractQuery implements QueryInterface
     public function getData(): mixed
     {
         return $this->data;
+    }
+
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    public function setHeaders(array $headers): self
+    {
+        $this->headers = $headers;
+
+        return $this;
     }
 }
