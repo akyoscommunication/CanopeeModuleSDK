@@ -4,7 +4,7 @@ namespace Akyos\CanopeeModuleSDK\Translation;
 
 use Symfony\Component\Translation\TranslatableMessage;
 
-class CanopeeTranslatableMessage extends TranslatableMessage
+class CanopeeTranslatableMessage // extends TranslatableMessage
 {
     private string $translatedMessage;
 
