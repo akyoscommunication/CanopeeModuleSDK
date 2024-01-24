@@ -3,6 +3,7 @@
 namespace Akyos\CanopeeModuleSDK\Service;
 
 use Akyos\CanopeeModuleSDK\Class\AbstractQuery;
+use Akyos\CanopeeModuleSDK\Class\AbstractQueryObject;
 use Akyos\CanopeeModuleSDK\Class\Query;
 use Akyos\CanopeeModuleSDK\Entity\UserToken;
 use Akyos\CanopeeModuleSDK\Repository\UserTokenRepository;
@@ -39,6 +40,7 @@ class ProviderService
                 foreach($query->getHeaders() as $key => $value) {
                     $request = $request->withAddedHeader($key, $value);
                 }
+//                dd($request);
                 $response = $this->client->getResponse($request);
             } catch (Exception $e) {
 //                dd($e);
@@ -66,9 +68,15 @@ class ProviderService
         foreach ($query->getPathParams() as $value) {
             $pathParams .= '/'.$value;
         }
+
+        $resource = $query->getResource();
+        if (($body = $query->getBody()) instanceof AbstractQueryObject) {
+            $resource = $body->resource;
+        }
+
         return $this->client->getAuthenticatedRequest(
             $query->getMethod(),
-            $this->moduleUrl . 'api/' . $query->getResource(). $pathParams . '?' . http_build_query($query->getQueryParams()),
+            $this->moduleUrl . 'api/' . $resource. $pathParams . '?' . http_build_query($query->getQueryParams()),
             $this->userToken->getAccessToken(),
             $options ?? []
         );
@@ -152,6 +160,8 @@ class ProviderService
             'urlAuthorize' => $this->moduleUrl.'authorize',
             'urlAccessToken' => $this->moduleUrl.'token',
             'urlResourceOwnerDetails' => $this->moduleUrl,
+            'proxy' => 'http://localhost:7080',
+            'verify' => false,
         ]);
 
         if(!$this->user) {

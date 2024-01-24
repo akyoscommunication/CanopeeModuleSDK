@@ -2,12 +2,14 @@
 
 namespace Akyos\CanopeeModuleSDK\Class;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class Post extends AbstractQuery
 {
     public function __construct(?string $resource = null)
     {
         $this->resource = $resource;
-        $this->method = 'POST';
+        $this->method = Request::METHOD_POST;
     }
 
     public function onPreQuery(): void
