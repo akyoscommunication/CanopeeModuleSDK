@@ -19,4 +19,19 @@ class CanopeeTranslatableMessage // extends TranslatableMessage
     {
         return $this->translatedMessage;
     }
+
+    public function __toString(): string
+    {
+        return $this->getTranslatedMessage();
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'message' => $this->getMessage(),
+            'domain' => $this->getDomain(),
+            'parameters' => $this->getParameters(),
+            'translatedMessage' => $this->getTranslatedMessage(),
+        ];
+    }
 }

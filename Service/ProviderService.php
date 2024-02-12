@@ -8,10 +8,13 @@ use Akyos\CanopeeModuleSDK\Class\Query;
 use Akyos\CanopeeModuleSDK\Entity\UserToken;
 use Akyos\CanopeeModuleSDK\Repository\UserTokenRepository;
 use Exception;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use League\Bundle\OAuth2ServerBundle\Entity\Client;
 use League\OAuth2\Client\Provider\GenericProvider;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -36,17 +39,18 @@ class ProviderService
     {
         if($_SERVER['APP_ENV'] !== 'test') {
             $request = $this->request($query);
+
             try {
-                foreach($query->getHeaders() as $key => $value) {
-                    $request = $request->withAddedHeader($key, $value);
+                $response = $this->client->getResponse($request);
+            } catch (ClientException $e) {
+                if ($e->getCode() === Response::HTTP_UNAUTHORIZED) {
+                    $this->refreshTokens();
+                    $request = $this->request($query);
+                    $response = $this->client->getResponse($request);
                 }
-//                dd($request);
-                $response = $this->client->getResponse($request);
+                throw $e;
             } catch (Exception $e) {
-//                dd($e);
-                $this->refreshTokens();
-                $request = $this->request($query);
-                $response = $this->client->getResponse($request);
+                dd($e);
             }
             return json_decode($response->getBody()->getContents());
         }
@@ -61,25 +65,34 @@ class ProviderService
 
     private function request(AbstractQuery $query): RequestInterface
     {
+        $body = $query->getBody();
+        $options = [];
         $pathParams = '';
-        if(!empty($query->getBody())){
-            $options['body'] = json_encode($query->getBody());
+        $resource = $query->getResource();
+
+        if ($body instanceof AbstractQueryObject) {
+            $resource = $body->resource;
+            $options['body'] = json_encode($body->dataTransform($this->container));
+        } else {
+            $options['body'] = !empty($query->getBody()) ? json_encode($body) : null;
         }
+
         foreach ($query->getPathParams() as $value) {
             $pathParams .= '/'.$value;
         }
 
-        $resource = $query->getResource();
-        if (($body = $query->getBody()) instanceof AbstractQueryObject) {
-            $resource = $body->resource;
-        }
-
-        return $this->client->getAuthenticatedRequest(
+        $request = $this->client->getAuthenticatedRequest(
             $query->getMethod(),
             $this->moduleUrl . 'api/' . $resource. $pathParams . '?' . http_build_query($query->getQueryParams()),
             $this->userToken->getAccessToken(),
-            $options ?? []
+            $options
         );
+
+        foreach($query->getHeaders() as $key => $value) {
+            $request = $request->withAddedHeader($key, $value);
+        }
+
+        return $request;
     }
 
     private function refreshTokens(): void
@@ -160,8 +173,6 @@ class ProviderService
             'urlAuthorize' => $this->moduleUrl.'authorize',
             'urlAccessToken' => $this->moduleUrl.'token',
             'urlResourceOwnerDetails' => $this->moduleUrl,
-//            'proxy' => 'http://localhost:7080',
-//            'verify' => false,
         ]);
 
         if(!$this->user) {
