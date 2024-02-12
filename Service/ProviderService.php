@@ -173,8 +173,6 @@ class ProviderService
             'urlAuthorize' => $this->moduleUrl.'authorize',
             'urlAccessToken' => $this->moduleUrl.'token',
             'urlResourceOwnerDetails' => $this->moduleUrl,
-            'proxy' => 'http://localhost:7080',
-            'verify' => false,
         ]);
 
         if(!$this->user) {
