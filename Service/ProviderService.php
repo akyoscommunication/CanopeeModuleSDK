@@ -52,7 +52,8 @@ class ProviderService
             } catch (Exception $e) {
                 dd($e);
             }
-            return json_decode($response->getBody()->getContents());
+            $data = json_decode($response->getBody()->getContents());
+            return $data ?: new \stdClass();
         }
         return (object) [
             'hydra:member' => [],
