@@ -47,8 +47,9 @@ class ProviderService
                     $this->refreshTokens();
                     $request = $this->request($query);
                     $response = $this->client->getResponse($request);
+                } else {
+                    throw $e;
                 }
-                throw $e;
             } catch (Exception $e) {
                 dd($e);
             }
