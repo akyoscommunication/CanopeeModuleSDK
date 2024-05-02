@@ -8,6 +8,7 @@ use Akyos\CanopeeModuleSDK\Class\Query;
 use Akyos\CanopeeModuleSDK\Entity\UserToken;
 use Akyos\CanopeeModuleSDK\Repository\UserTokenRepository;
 use Exception;
+use stdClass;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use League\Bundle\OAuth2ServerBundle\Entity\Client;
@@ -54,6 +55,14 @@ class ProviderService
                 dd($e);
             }
             $data = json_decode($response->getBody()->getContents());
+            if(is_array($data)) {
+                $object = new stdClass();
+                foreach ($data as $key => $value)
+                {
+                    $object->$key = $value;
+                }
+                $data = $object;
+            }
             return $data ?: new \stdClass();
         }
         return (object) [
