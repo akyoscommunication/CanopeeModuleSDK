@@ -113,12 +113,16 @@ class ProviderService
             $response = $this->client->getAccessToken('refresh_token', [
                 'refresh_token' => $this->userToken->getRefreshToken(),
             ]);
+            $this->userToken->setRefreshToken($response->getRefreshToken());
+            $this->userToken->setAccessToken($response->getToken());
+            $this->userTokenRepository->add($this->userToken, true);
         } catch (IdentityProviderException $e) {
-            $this->newUserToken($this->userToken->getUser());
+            try {
+                $this->userToken = $this->newUserToken($this->userToken->getUser());
+            } catch (Exception $e) {
+                dd($e);
+            }
         }
-        $this->userToken->setRefreshToken($response->getRefreshToken());
-        $this->userToken->setAccessToken($response->getToken());
-        $this->userTokenRepository->add($this->userToken, true);
     }
 
     /**
@@ -150,9 +154,8 @@ class ProviderService
         if ($_SERVER['APP_ENV'] !== 'test') {
             $userToken = $this->userTokenRepository->findOneBy(['user' => $this->user, 'module' => $this->target]);
             if(!$userToken) {
-                $userToken = $this->newUserToken($this->user);
+                $this->userToken = $this->newUserToken($this->user);
             }
-            $this->userToken = $userToken;
         }
         return $this;
     }
@@ -205,6 +208,9 @@ class ProviderService
         }
     }
 
+    /**
+     * @throws Exception
+     */
     private function newUserToken(mixed $user): UserToken
     {
         try {
@@ -212,19 +218,19 @@ class ProviderService
                 'username' => str_contains($user->getUserIdentifier(), '@') ? $user->getId() : $user->getUserIdentifier(),
                 'password' => $user->getModuleToken(),
             ]);
+
+            $userToken = (new UserToken())
+                ->setUser($user)
+                ->setRefreshToken($response->getRefreshToken())
+                ->setAccessToken($response->getToken())
+                ->setModule($this->target)
+            ;
+            $this->user->addUserToken($userToken);
+            $this->userTokenRepository->add($userToken, true);
+
+            return $userToken;
         } catch (IdentityProviderException $e) {
             throw new Exception('Invalid credentials '.$e->getMessage());
         }
-
-        $userToken = (new UserToken())
-            ->setUser($user)
-            ->setRefreshToken($response->getRefreshToken())
-            ->setAccessToken($response->getToken())
-            ->setModule($this->target)
-        ;
-        $this->user->addUserToken($userToken);
-        $this->userTokenRepository->add($userToken, true);
-
-        return $userToken;
     }
 }
