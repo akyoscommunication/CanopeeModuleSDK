@@ -41,7 +41,6 @@ class ProviderService
     {
         if($_SERVER['APP_ENV'] !== 'test') {
             $request = $this->request($query);
-
             try {
                 $response = $this->client->getResponse($request);
             } catch (ClientException $e) {
@@ -154,8 +153,9 @@ class ProviderService
         if ($_SERVER['APP_ENV'] !== 'test') {
             $userToken = $this->userTokenRepository->findOneBy(['user' => $this->user, 'module' => $this->target]);
             if(!$userToken) {
-                $this->userToken = $this->newUserToken($this->user);
+                $userToken = $this->newUserToken($this->user);
             }
+            $this->userToken = $userToken;
         }
         return $this;
     }
