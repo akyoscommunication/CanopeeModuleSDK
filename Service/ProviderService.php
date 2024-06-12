@@ -8,6 +8,7 @@ use Akyos\CanopeeModuleSDK\Class\Query;
 use Akyos\CanopeeModuleSDK\Entity\UserToken;
 use Akyos\CanopeeModuleSDK\Repository\UserTokenRepository;
 use Exception;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use stdClass;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
@@ -108,9 +109,13 @@ class ProviderService
 
     private function refreshTokens(): void
     {
-        $response = $this->client->getAccessToken('refresh_token', [
-            'refresh_token' => $this->userToken->getRefreshToken(),
-        ]);
+        try {
+            $response = $this->client->getAccessToken('refresh_token', [
+                'refresh_token' => $this->userToken->getRefreshToken(),
+            ]);
+        } catch (IdentityProviderException $e) {
+            $this->newUserToken($this->userToken->getUser());
+        }
         $this->userToken->setRefreshToken($response->getRefreshToken());
         $this->userToken->setAccessToken($response->getToken());
         $this->userTokenRepository->add($this->userToken, true);
@@ -145,20 +150,7 @@ class ProviderService
         if ($_SERVER['APP_ENV'] !== 'test') {
             $userToken = $this->userTokenRepository->findOneBy(['user' => $this->user, 'module' => $this->target]);
             if(!$userToken) {
-
-                $response = $this->client->getAccessToken('password', [
-                    'username' => str_contains($this->user->getUserIdentifier(), '@') ? $this->user->getId() : $this->user->getUserIdentifier(),
-                    'password' => $this->user->getModuleToken(),
-                ]);
-
-                $userToken = (new UserToken())
-                    ->setUser($this->user)
-                    ->setRefreshToken($response->getRefreshToken())
-                    ->setAccessToken($response->getToken())
-                    ->setModule($this->target)
-                ;
-                $this->user->addUserToken($userToken);
-                $this->userTokenRepository->add($userToken, true);
+                $userToken = $this->newUserToken($this->user);
             }
             $this->userToken = $userToken;
         }
@@ -211,5 +203,28 @@ class ProviderService
         if(!$this->isInitialized) {
             throw new Exception('ProviderService is not initialized');
         }
+    }
+
+    private function newUserToken(mixed $user): UserToken
+    {
+        try {
+            $response = $this->client->getAccessToken('password', [
+                'username' => str_contains($user->getUserIdentifier(), '@') ? $user->getId() : $user->getUserIdentifier(),
+                'password' => $user->getModuleToken(),
+            ]);
+        } catch (IdentityProviderException $e) {
+            throw new Exception('Invalid credentials '.$e->getMessage());
+        }
+
+        $userToken = (new UserToken())
+            ->setUser($user)
+            ->setRefreshToken($response->getRefreshToken())
+            ->setAccessToken($response->getToken())
+            ->setModule($this->target)
+        ;
+        $this->user->addUserToken($userToken);
+        $this->userTokenRepository->add($userToken, true);
+
+        return $userToken;
     }
 }
