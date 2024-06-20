@@ -10,9 +10,12 @@ use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
+use Akyos\CanopeeModuleSDK\Trait\ComponentWithPaginationTrait;
 
 trait ComponentWithTableTrait
 {
+    use ComponentWithPaginationTrait;
+
     #[ExposeInTemplate(name: 'table', getter: 'getTable')]
     private ?string $table = null;
 
