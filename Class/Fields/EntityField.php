@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Class\Fields;
+namespace Akyos\CanopeeModuleSDK\Class\Fields;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Class;
+namespace Akyos\CanopeeModuleSDK\Class;
 
 use App\Class\Fields\ChoiceField;
 use Symfony\Component\Translation\TranslatableMessage;

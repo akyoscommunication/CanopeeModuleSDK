@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Class;
+namespace Akyos\CanopeeModuleSDK\Class;
 
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Component\Translation\Translator;
