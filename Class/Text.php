@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Class;
+namespace Akyos\CanopeeModuleSDK\Class;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 

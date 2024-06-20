@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Class\Fields;
+namespace Akyos\CanopeeModuleSDK\Class\Fields;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
