@@ -2,7 +2,7 @@
 
 namespace Akyos\CanopeeModuleSDK\Class;
 
-use App\Class\Fields\EntityField;
+use Akyos\CanopeeModuleSDK\Class\Fields\EntityField;
 use Symfony\Component\Translation\TranslatableMessage;
 
 class Entity extends Filter

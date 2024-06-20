@@ -2,7 +2,7 @@
 
 namespace Akyos\CanopeeModuleSDK\Class;
 
-use App\Class\Fields\ChoiceField;
+use Akyos\CanopeeModuleSDK\Class\Fields\ChoiceField;
 use Symfony\Component\Translation\TranslatableMessage;
 
 class Choices extends Filter

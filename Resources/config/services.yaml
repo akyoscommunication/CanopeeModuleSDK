@@ -7,7 +7,9 @@ services:
 
     Akyos\CanopeeModuleSDK\:
         resource: './../../*'
-        exclude: './../../Translation'
+        exclude:
+            - './../../Translation'
+            - './../../Class'
         tags: [ 'controller.service_arguments' ]
         public: true
 

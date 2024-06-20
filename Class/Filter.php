@@ -18,6 +18,8 @@ class Filter
 	public array $options = [];
 	public string $searchType = 'eq';
 
+    public mixed $defaultValue = null;
+
 	public array $params = [];
 	public ?string $type = null;
 
@@ -169,5 +171,16 @@ class Filter
 	{
 		return $this->placeholderTransDomain;
 	}
+
+    public function setDefaultValue(mixed $defaultValue): Filter
+    {
+        $this->defaultValue = $defaultValue;
+        return $this;
+    }
+
+    public function getDefaultValue(): mixed
+    {
+        return $this->defaultValue;
+    }
 
 }

@@ -100,9 +100,10 @@ trait ComponentWithPaginationTrait
         return [];
     }
 
+    #[ExposeInTemplate]
     public function getPagination(): string
     {
-        return $this->render('paginator.html.twig', [
+        return $this->render('@CanopeeModuleSDK/paginator.html.twig', [
             'elements' => $this->getElements(),
         ])->getContent();
     }

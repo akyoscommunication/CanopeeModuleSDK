@@ -130,12 +130,14 @@ trait ComponentWithFilterTrait
     {
         foreach ($this->getFilters() as $filter) {
             $queryParam = [];
-            if ($this->values[$filter->getName()] !== null && $this->values[$filter->getName()] !== '' && !empty($this->values[$filter->getName()])){
+            $value = $this->values[$filter->getName()];
+            if($this->values[$filter->getName()] === null || $this->values[$filter->getName()] === '' || empty($this->values[$filter->getName()])){
+                $value = $filter->getDefaultValue();
+            }
+            if ($value !== '' && !empty($value)){
                 foreach ($filter->getParams() as $param) {
                     if ($filter->getSearchType() === 'like')
-                        $value = '%' . $this->values[$filter->getName()] . '%';
-                    else
-                        $value = $this->values[$filter->getName()];
+                        $value = '%' . $value . '%';
                     $queryParam[] = $builder->expr()->{$filter->getSearchType()}($param, ':'.$filter->getName());
                     $builder->setParameter($filter->getName(), $value);
                 }

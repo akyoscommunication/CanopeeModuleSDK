@@ -2,7 +2,7 @@
 
 namespace Akyos\CanopeeModuleSDK\Class;
 
-use App\Class\Fields\DateField;
+use Akyos\CanopeeModuleSDK\Class\Fields\DateField;
 
 class Date extends Filter
 {
