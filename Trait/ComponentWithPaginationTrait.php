@@ -31,6 +31,7 @@ trait ComponentWithPaginationTrait
     public int $page = 1;
 
     public ?string $usedRoute = null;
+    public ?array $routeParams = [];
 
     public string $type = 'paginate';
 
@@ -79,6 +80,9 @@ trait ComponentWithPaginationTrait
 
         if($this->usedRoute !== null) {
             $paginator->setUsedRoute($this->usedRoute);
+            foreach($this->routeParams as $key => $param) {
+                $paginator->setParam($key, $param);
+            }
         }
         return $paginator;
     }
