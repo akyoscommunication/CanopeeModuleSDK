@@ -21,6 +21,8 @@ trait ComponentWithTableTrait
 
     public ?string $trTemplate = null;
 
+    public ?string $tableTemplate = '@CanopeeModuleSDK/table/table.html.twig';
+
     #[LiveProp(writable: true)]
     public ?string $sort = null;
 
