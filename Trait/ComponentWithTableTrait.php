@@ -29,14 +29,19 @@ trait ComponentWithTableTrait
 
     public function getTable(): false|string
     {
-        return $this->render('@CanopeeModuleSDK/table/table.html.twig', [
+        return $this->render($this->tableTemplate, array_merge([
             'elements' => $this->getElements(),
             'trTemplate' => $this->trTemplate,
             'tHeader' => $this->getTHeader(),
             'paginate' => $this->paginate,
             'sort' => $this->sort,
             'sortDirection' => $this->sortDirection,
-        ])->getContent();
+        ], $this->getTrTemplateVars()))->getContent();
+    }
+
+    protected function getTrTemplateVars(): array
+    {
+        return [];
     }
 
     #[LiveAction]
