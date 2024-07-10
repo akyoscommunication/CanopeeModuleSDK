@@ -78,9 +78,9 @@ trait ComponentWithPaginationTrait
             $this->getPaginatorOptions()
         );
 
-        if($this->usedRoute !== null) {
-            $paginator->setUsedRoute($this->usedRoute);
-            foreach($this->routeParams as $key => $param) {
+        if($this->getUsedRoute() !== null) {
+            $paginator->setUsedRoute($this->getUsedRoute());
+            foreach($this->getRouteParams() as $key => $param) {
                 $paginator->setParam($key, $param);
             }
         }
@@ -130,5 +130,25 @@ trait ComponentWithPaginationTrait
     public function canMore(): bool
     {
         return $this->getElements()->getTotalItemCount() > $this->limit * $this->page;
+    }
+
+    public function getUsedRoute(): ?string
+    {
+        return $this->usedRoute;
+    }
+
+    public function setUsedRoute(?string $usedRoute): void
+    {
+        $this->usedRoute = $usedRoute;
+    }
+
+    public function getRouteParams(): ?array
+    {
+        return $this->routeParams;
+    }
+
+    public function setRouteParams(?array $routeParams): void
+    {
+        $this->routeParams = $routeParams;
     }
 }
