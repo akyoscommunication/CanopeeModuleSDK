@@ -31,6 +31,8 @@ trait ComponentWithPaginationTrait
     public int $page = 1;
 
     public ?string $usedRoute = null;
+
+    #[LiveProp(writable: true)]
     public ?array $routeParams = [];
 
     public string $type = 'paginate';
