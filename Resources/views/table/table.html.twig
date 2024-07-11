@@ -15,8 +15,6 @@
                 {% endfor %}
                 {% if loop.first %}
                     <th>{{ knp_pagination_render(elements, '@CanopeeModuleSDK/table/Pagination/live_sliding.html.twig') }}</th>
-                {% else %}
-                    <th></th>
                 {% endif %}
             </tr>
         {% endfor %}
