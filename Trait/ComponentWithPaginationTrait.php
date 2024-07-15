@@ -30,6 +30,12 @@ trait ComponentWithPaginationTrait
     #[LiveProp(writable: true)]
     public int $page = 1;
 
+    #[LiveProp(writable: true)]
+    public ?string $defaultSortField = null;
+
+    #[LiveProp(writable: true)]
+    public ?string $defaultSortDirection = null;
+
     public ?string $usedRoute = null;
 
     #[LiveProp(writable: true)]
@@ -76,7 +82,7 @@ trait ComponentWithPaginationTrait
             $this->getQuery(),
             $page,
             $limit,
-            $this->getPaginatorOptions()
+            array_merge($this->getDefaultPaginatorOptions(), $this->getPaginatorOptions())
         );
 
         if($this->getUsedRoute() !== null) {
@@ -109,6 +115,17 @@ trait ComponentWithPaginationTrait
     public function getPaginatorOptions(): array
     {
         return [];
+    }
+
+    public function getDefaultPaginatorOptions(): array
+    {
+        if($this->sort === null && $this->getDefaultSortField() === null) {
+            return [];
+        }
+        return [
+            PaginatorInterface::DEFAULT_SORT_FIELD_NAME => $this->sort ?? $this->getDefaultSortField(),
+            PaginatorInterface::DEFAULT_SORT_DIRECTION => $this->sortDirection ?? ($this->getDefaultSortDirection() ?? 'desc'),
+        ];
     }
 
     #[ExposeInTemplate]
@@ -157,5 +174,25 @@ trait ComponentWithPaginationTrait
     public function setRouteParams(?array $routeParams): void
     {
         $this->routeParams = $routeParams;
+    }
+
+    public function getDefaultSortField(): ?string
+    {
+        return $this->defaultSortField;
+    }
+
+    public function setDefaultSortField(?string $defaultSortField): void
+    {
+        $this->defaultSortField = $defaultSortField;
+    }
+
+    public function getDefaultSortDirection(): ?string
+    {
+        return $this->defaultSortDirection;
+    }
+
+    public function setDefaultSortDirection(?string $defaultSortDirection): void
+    {
+        $this->defaultSortDirection = $defaultSortDirection;
     }
 }
