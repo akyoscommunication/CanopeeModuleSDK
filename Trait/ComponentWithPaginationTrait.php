@@ -94,6 +94,9 @@ trait ComponentWithPaginationTrait
         return $paginator;
     }
 
+    /**
+     * @throws Exception
+     */
     #[ExposeInTemplate]
     public function getElements(): PaginationInterface
     {
