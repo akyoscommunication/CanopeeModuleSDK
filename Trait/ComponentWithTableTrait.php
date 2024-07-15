@@ -10,7 +10,6 @@ use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
-use Akyos\CanopeeModuleSDK\Trait\ComponentWithPaginationTrait;
 
 trait ComponentWithTableTrait
 {
@@ -22,12 +21,6 @@ trait ComponentWithTableTrait
     public ?string $trTemplate = null;
 
     public ?string $tableTemplate = '@CanopeeModuleSDK/table/table.html.twig';
-
-    #[LiveProp(writable: true)]
-    public ?string $sort = null;
-
-    #[LiveProp(writable: true)]
-    public ?string $sortDirection = null;
 
     public function getTable(): false|string
     {
