@@ -56,8 +56,7 @@ trait ComponentWithPaginationTrait
     /**
      * @throws Exception
      */
-    #[ExposeInTemplate]
-    public function getElements(): PaginationInterface
+    private function constructPaginator(): PaginationInterface
     {
         if(!in_array($this->type, self::TYPES_LIST)) {
             throw new Exception('Type not supported');
@@ -87,6 +86,12 @@ trait ComponentWithPaginationTrait
             }
         }
         return $paginator;
+    }
+
+    #[ExposeInTemplate]
+    public function getElements(): PaginationInterface
+    {
+        return $this->constructPaginator();
     }
 
     #[LiveAction]
