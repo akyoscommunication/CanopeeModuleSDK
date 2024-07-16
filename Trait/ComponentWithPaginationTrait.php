@@ -44,6 +44,12 @@ trait ComponentWithPaginationTrait
     public string $type = 'paginate';
 
     #[LiveProp(writable: true)]
+    public ?string $sort = null;
+
+    #[LiveProp(writable: true)]
+    public ?string $sortDirection = null;
+
+    #[LiveProp(writable: true)]
     public int $limit = 24;
 
     public PaginatorInterface $paginator;
@@ -120,7 +126,7 @@ trait ComponentWithPaginationTrait
         return [];
     }
 
-    public function getDefaultPaginatorOptions(): array
+    private function getDefaultPaginatorOptions(): array
     {
         if($this->sort === null && $this->getDefaultSortField() === null) {
             return [];
