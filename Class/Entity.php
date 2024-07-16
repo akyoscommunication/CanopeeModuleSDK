@@ -3,15 +3,16 @@
 namespace Akyos\CanopeeModuleSDK\Class;
 
 use Akyos\CanopeeModuleSDK\Class\Fields\EntityField;
+use Closure;
 use Symfony\Component\Translation\TranslatableMessage;
 
 class Entity extends Filter
 {
     public string $class;
 
-    public \Closure $repository;
+    public ?Closure $repository = null;
 
-    public string|\Closure|null $choiceLabel = null;
+    public string|Closure|null $choiceLabel = null;
 
     public bool $multiple = false;
 
@@ -33,12 +34,12 @@ class Entity extends Filter
         return $this;
     }
 
-    public function getQueryBuilder(): \Closure
+    public function getQueryBuilder(): ?Closure
     {
         return $this->repository;
     }
 
-    public function setQueryBuilder(\Closure $repository): self
+    public function setQueryBuilder(?Closure $repository = null): self
     {
         $this->repository = $repository;
 
@@ -63,8 +64,11 @@ class Entity extends Filter
             'class' => $this->getClass(),
             'placeholder' => $this->getPlaceholderTransDomain() ? (new TranslatableMessage($this->getPlaceholder(), [], $this->getPlaceholderTransDomain())) : $this->getPlaceholder(),
             'multiple' => $this->isMultiple(),
-            'query_builder' => $this->getQueryBuilder(),
         ];
+
+        if($this->getQueryBuilder()) {
+            $optionFields['query_builder'] = $this->getQueryBuilder();
+        }
 
         if ($this->choiceLabel) {
             $optionFields['choice_label'] = $this->choiceLabel;
@@ -73,7 +77,7 @@ class Entity extends Filter
         return array_merge($optionFields, $options);
     }
 
-    public function setChoiceLabel(string|\Closure $choiceLabel): Entity
+    public function setChoiceLabel(string|Closure $choiceLabel): Entity
     {
         $this->choiceLabel = $choiceLabel;
         return $this;

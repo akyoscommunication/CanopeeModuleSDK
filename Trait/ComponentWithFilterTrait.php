@@ -136,10 +136,27 @@ trait ComponentWithFilterTrait
             }
             if ($value !== '' && !empty($value)){
                 foreach ($filter->getParams() as $param) {
-                    if ($filter->getSearchType() === 'like')
-                        $value = '%' . $value . '%';
-                    $queryParam[] = $builder->expr()->{$filter->getSearchType()}($param, ':'.$filter->getName());
-                    $builder->setParameter($filter->getName(), $value);
+                    if($param instanceof \Closure) {
+                        // Param should be a Closure that takes a QueryBuilder and a mixed value, returns and expression, ex:
+                        // function(QueryBuilder $builder, mixed $value) {
+                        //    if ($value) {
+                        //       if ($value === Module::MODULE_CANOPEE_VALUE) {
+                        //          $expr = $builder->expr()->andX('m IS NULL');
+                        //       } else {
+                        //          $expr = $builder->expr()->andX('m.slug = :site');
+                        //          $builder->setParameter('site', $value);
+                        //       }
+                        //       return $expr;
+                        //    }
+                        // }
+                        $queryParam[] = $param($builder, $value);
+                    } else {
+                        // Param should be a string, ex: 'n.type'
+                        if ($filter->getSearchType() === 'like')
+                            $value = '%' . $value . '%';
+                        $queryParam[] = $builder->expr()->{$filter->getSearchType()}($param, ':'.$filter->getName());
+                        $builder->setParameter($filter->getName(), $value);
+                    }
                 }
                 $builder->andWhere(
                     $builder->expr()->orX(...$queryParam)
