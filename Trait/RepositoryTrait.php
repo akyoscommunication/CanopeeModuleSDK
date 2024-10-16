@@ -4,7 +4,6 @@ namespace Akyos\CanopeeModuleSDK\Trait;
 
 use App\Entity\Customer;
 use App\Entity\UserAccessRight;
-use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Target;
@@ -83,6 +82,7 @@ Trait RepositoryTrait
     {
         $this->defineCustomer();
         $queryBuilder = $this->createQueryBuilder($this->alias);
+        $queryBuilder = $this->commonJoins($queryBuilder);
         $queryBuilder = $this->andWhereNotDelete($queryBuilder);
         $queryBuilder = $this->defineCustomerAlias($queryBuilder);
         $queryBuilder = $this->andWhereCustomer($queryBuilder);
@@ -108,7 +108,12 @@ Trait RepositoryTrait
         return null;
     }
 
-    public function andWhereNotDelete(QueryBuilder $queryBuilder): Comparison|QueryBuilder
+    private function commonJoins(QueryBuilder $queryBuilder): QueryBuilder
+    {
+        return $queryBuilder;
+    }
+
+    public function andWhereNotDelete(QueryBuilder $queryBuilder): QueryBuilder
     {
         if ($this->deletedState !== null) {
             $queryBuilder
