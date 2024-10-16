@@ -3,12 +3,12 @@
 namespace Akyos\CanopeeModuleSDK\Trait;
 
 use App\Entity\Customer;
-use App\Entity\User;
 use App\Entity\UserAccessRight;
 use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Target;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Workflow\WorkflowInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -23,10 +23,16 @@ Trait RepositoryTrait
     private ?string $deletedState = 'alive';
 
     private ?Customer $customer = null;
-    private ?User $user = null;
 
     private Security $security;
     private WorkflowInterface $deleteWorkflow;
+    private RequestStack $requestStack;
+
+    #[Required]
+    public function setRequestStack(RequestStack $requestStack): void
+    {
+        $this->requestStack = $requestStack;
+    }
 
     #[Required]
     public function setSecurity(Security $security): void
@@ -96,6 +102,9 @@ Trait RepositoryTrait
 
     private function defineUserAccessRight(): ?UserAccessRight
     {
+        if(!$this->userAccessRight) {
+            return $this->requestStack->getSession()->get('userAccessRights');
+        }
         return null;
     }
 
@@ -136,7 +145,7 @@ Trait RepositoryTrait
     {
         return $queryBuilder
             ->addOrderBy($this->alias.'.createdAt', 'DESC')
-        ;
+            ;
     }
 
     // GETTERS AND SETTERS
