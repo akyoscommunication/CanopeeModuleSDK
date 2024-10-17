@@ -93,6 +93,17 @@ Trait RepositoryTrait
         throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks');
     }
 
+    final public function findById(int $id): QueryBuilder
+    {
+        return $this->findAll()
+            ->andWhere($this->alias.'.id = :id')
+            ->setParameter('id', $id)
+            ->setMaxResults(1)
+            ;
+    }
+
+    /// FIND ALL
+
     final public function findAll(): QueryBuilder
     {
         return $this->defaultQuery();
