@@ -146,7 +146,7 @@ Trait RepositoryTrait
 
     private function andWhereNotDelete(QueryBuilder $queryBuilder): QueryBuilder
     {
-        if (property_exists($this->entityName, $this->deletedStateProperty)) {
+        if (property_exists($this->_entityName, $this->deletedStateProperty)) {
             $queryBuilder
                 ->andWhere(($this->deletedAlias ?? $this->alias).'.'.$this->deletedStateProperty.' = :deleted')
                 ->setParameter('deleted', $this->deletedState)
