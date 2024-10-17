@@ -5,6 +5,7 @@ namespace Akyos\CanopeeModuleSDK\Trait;
 use App\Entity\Customer;
 use App\Entity\UserAccessRight;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -64,8 +65,12 @@ Trait RepositoryTrait
             return;
         }
 
-        if ($this->deleteWorkflow->can($object, 'to_delete')) {
-            $this->deleteWorkflow->apply($object, 'to_delete');
+        if(property_exists($object, 'deletedState')) {
+            if ($this->deleteWorkflow->can($object, 'to_delete')) {
+                $this->deleteWorkflow->apply($object, 'to_delete');
+            }
+        } else {
+            $this->getEntityManager()->remove($object);
         }
 
         if ($flush) {
@@ -73,12 +78,27 @@ Trait RepositoryTrait
         }
     }
 
-    public function findAll(): QueryBuilder
+    final public function find($id, $lockMode = null, $lockVersion = null)
+    {
+        throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks');
+    }
+
+    final public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null)
+    {
+        throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks');
+    }
+
+    final public function findOneBy(array $criteria, ?array $orderBy = null)
+    {
+        throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks');
+    }
+
+    final public function findAll(): QueryBuilder
     {
         return $this->defaultQuery();
     }
 
-    private function defaultQuery(): QueryBuilder
+    final protected function defaultQuery(): QueryBuilder
     {
         $this->defineCustomer();
         $queryBuilder = $this->createQueryBuilder($this->alias);
@@ -113,9 +133,9 @@ Trait RepositoryTrait
         return $queryBuilder;
     }
 
-    public function andWhereNotDelete(QueryBuilder $queryBuilder): QueryBuilder
+    private function andWhereNotDelete(QueryBuilder $queryBuilder): QueryBuilder
     {
-        if ($this->deletedState !== null) {
+        if (property_exists($this->entityName, $this->deletedStateProperty)) {
             $queryBuilder
                 ->andWhere(($this->deletedAlias ?? $this->alias).'.'.$this->deletedStateProperty.' = :deleted')
                 ->setParameter('deleted', $this->deletedState)
