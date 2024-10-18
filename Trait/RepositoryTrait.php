@@ -169,7 +169,7 @@ Trait RepositoryTrait
 
     private function andWhereCustomer(QueryBuilder $queryBuilder): QueryBuilder
     {
-        if($this->performSameCustomerCheck) {
+        if($this->performSameCustomerCheck && $this->customer) {
             $queryBuilder
                 ->andWhere($this->customerAlias.' = :'.$this->customerParameter)
                 ->setParameter($this->customerParameter, $this->customer)
