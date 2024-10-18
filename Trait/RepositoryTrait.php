@@ -23,6 +23,7 @@ Trait RepositoryTrait
     private ?string $deletedState = 'alive';
 
     private ?Customer $customer = null;
+    private ?UserAccessRight $userAccessRight = null;
 
     private Security $security;
     private WorkflowInterface $deleteWorkflow;
@@ -134,7 +135,8 @@ Trait RepositoryTrait
     private function defineUserAccessRight(): ?UserAccessRight
     {
         if(!$this->userAccessRight) {
-            return $this->requestStack->getSession()->get('userAccessRights');
+            $this->userAccessRight = $this->requestStack->getSession()->get('userAccessRights');
+            return $this->userAccessRight;
         }
         return null;
     }
