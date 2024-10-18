@@ -197,4 +197,16 @@ Trait RepositoryTrait
 
         return $this;
     }
+
+    public function getPerformSameCustomerCheck(): bool
+    {
+        return $this->performSameCustomerCheck;
+    }
+
+    public function setPerformSameCustomerCheck(bool $performSameCustomerCheck): static
+    {
+        $this->performSameCustomerCheck = $performSameCustomerCheck;
+
+        return $this;
+    }
 }
