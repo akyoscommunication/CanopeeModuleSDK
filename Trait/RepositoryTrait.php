@@ -81,16 +81,44 @@ Trait RepositoryTrait
 
     final public function find($id, $lockMode = null, $lockVersion = null)
     {
+        if(is_int($id)) {
+            return $this->findById($id)->getQuery()->getOneOrNullResult();
+        }
+
+        if(is_array($id) && isset($id['id']) && is_int($id['id'])) {
+            return $this->findById($id['id'])->getQuery()->getOneOrNullResult();
+        }
+
         throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks. See exemples in other repostories or look at Akyos\CanopeeModuleSDK\Trait\RepositoryTrait to understand how it works.');
     }
 
     final public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null)
     {
+        foreach ($criteria as $key => $value) {
+            if ($key === 'uuid') {
+                return $this->findByUuid($value)->getQuery()->getOneOrNullResult();
+            }
+
+            if ($key === 'id') {
+                return $this->findById($value)->getQuery()->getOneOrNullResult();
+            }
+        }
+
         throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks. See exemples in other repostories or look at Akyos\CanopeeModuleSDK\Trait\RepositoryTrait to understand how it works.');
     }
 
     final public function findOneBy(array $criteria, ?array $orderBy = null)
     {
+        foreach ($criteria as $key => $value) {
+            if ($key === 'uuid') {
+                return $this->findByUuid($value)->getQuery()->getOneOrNullResult();
+            }
+
+            if ($key === 'id') {
+                return $this->findById($value)->getQuery()->getOneOrNullResult();
+            }
+        }
+
         throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks. See exemples in other repostories or look at Akyos\CanopeeModuleSDK\Trait\RepositoryTrait to understand how it works.');
     }
 
@@ -101,6 +129,13 @@ Trait RepositoryTrait
             ->setParameter('id', $id)
             ->setMaxResults(1)
             ;
+    }
+
+    final public function findByUuid(string $uuid): QueryBuilder
+    {
+        return $this->findAll()
+            ->andWhere('u.uuid = :uuid')
+            ->setParameter('uuid', $uuid);
     }
 
     /// FIND ALL
