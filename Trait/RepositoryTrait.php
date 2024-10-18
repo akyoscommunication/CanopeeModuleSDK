@@ -81,17 +81,17 @@ Trait RepositoryTrait
 
     final public function find($id, $lockMode = null, $lockVersion = null)
     {
-        throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks');
+        throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks. See exemples in other repostories or look at Akyos\CanopeeModuleSDK\Trait\RepositoryTrait to understand how it works.');
     }
 
     final public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null)
     {
-        throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks');
+        throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks. See exemples in other repostories or look at Akyos\CanopeeModuleSDK\Trait\RepositoryTrait to understand how it works.');
     }
 
     final public function findOneBy(array $criteria, ?array $orderBy = null)
     {
-        throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks');
+        throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks. See exemples in other repostories or look at Akyos\CanopeeModuleSDK\Trait\RepositoryTrait to understand how it works.');
     }
 
     final public function findById(int $id): QueryBuilder
