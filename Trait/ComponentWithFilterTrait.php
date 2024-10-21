@@ -135,6 +135,9 @@ trait ComponentWithFilterTrait
                 $value = $filter->getDefaultValue();
             }
             if ($value !== '' && !empty($value)){
+                if($filter->getCallback()) {
+                    $filter->getCallback()($filter, $value);
+                }
                 foreach ($filter->getParams() as $param) {
                     if($param instanceof \Closure) {
                         // Param should be a Closure that takes a QueryBuilder and a mixed value, returns and expression, ex:
