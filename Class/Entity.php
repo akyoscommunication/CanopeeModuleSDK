@@ -16,6 +16,9 @@ class Entity extends Filter
 
     public bool $multiple = false;
 
+    public ?array $groups = [];
+    public ?array $choices = [];
+
     public function __construct(string $name, ?string $label = null, ?string $placeholder = null, $type = EntityField::class)
     {
         parent::__construct($name, $label, $placeholder);
@@ -66,12 +69,22 @@ class Entity extends Filter
             'multiple' => $this->isMultiple(),
         ];
 
-        if($this->getQueryBuilder()) {
+        if ($this->getQueryBuilder()) {
             $optionFields['query_builder'] = $this->getQueryBuilder();
         }
 
         if ($this->choiceLabel) {
             $optionFields['choice_label'] = $this->choiceLabel;
+        }
+
+        if ($this->groups) {
+            $optionFields['tom_select_options'] = [
+                'optgroups' => $this->groups,
+                'options' => $this->choices,
+                'optgroupField' => 'group',
+                'labelField' => 'label',
+                'searchField' => ['label'],
+            ];
         }
 
         return array_merge($optionFields, $options);
@@ -80,6 +93,26 @@ class Entity extends Filter
     public function setChoiceLabel(string|Closure $choiceLabel): Entity
     {
         $this->choiceLabel = $choiceLabel;
+        return $this;
+    }
+
+    public function addGroup(string $label, string $value, array $choices): Entity
+    {
+        $this->groups[] = [
+            'label' => $label,
+            'value' => $value
+        ];
+
+        array_map(function($choice) use ($value) {
+            $this->choices[] = [
+                'label' => ($this->choiceLabel)($choice),
+                'value' => $choice->getId(),
+                'group' => $value
+            ];
+        }, $choices);
+
+        $this->choices = [...$this->choices, ...$choices];
+
         return $this;
     }
 }
