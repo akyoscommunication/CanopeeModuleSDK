@@ -137,14 +137,11 @@ class Filter
 
     public function addOptions(array $options): self
     {
-        if (array_key_exists('tom_select_options', $options) && array_key_exists('tom_select_options', $this->getOptions())) {
-            $tomSelectOptions['tom_select_options'] = array_merge($this->getOptions()['tom_select_options'], $options['tom_select_options']);
-        }
         $this->options = [
             ...$this->getOptions(),
-            ...$options,
-            ...$tomSelectOptions ?? []
+            ...$options
         ];
+
         return $this;
     }
 
