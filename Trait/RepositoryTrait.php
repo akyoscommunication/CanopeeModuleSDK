@@ -81,10 +81,13 @@ Trait RepositoryTrait
 
     final public function find($id, $lockMode = null, $lockVersion = null)
     {
+        if(is_string($id)) {
+            $id = (int) $id;
+            return $this->findById($id)->getQuery()->getOneOrNullResult();
+        }
         if(is_int($id)) {
             return $this->findById($id)->getQuery()->getOneOrNullResult();
         }
-
         if(is_array($id) && isset($id['id']) && is_int($id['id'])) {
             return $this->findById($id['id'])->getQuery()->getOneOrNullResult();
         }
