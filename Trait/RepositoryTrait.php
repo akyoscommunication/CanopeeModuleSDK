@@ -89,7 +89,7 @@ Trait RepositoryTrait
             return $this->findById($id['id'])->getQuery()->getOneOrNullResult();
         }
 
-        throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks. See exemples in other repostories or look at Akyos\CanopeeModuleSDK\Trait\RepositoryTrait to understand how it works.');
+        throw new Exception('Do not use find method, create your own method based on findAll to benefit from the default query with customer and deletedState checks. See exemples in other repostories or look at Akyos\CanopeeModuleSDK\Trait\RepositoryTrait to understand how it works.');
     }
 
     final public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null)
@@ -102,9 +102,13 @@ Trait RepositoryTrait
             if ($key === 'id') {
                 return $this->findById($value)->getQuery()->getOneOrNullResult();
             }
+
+            if($key === 'email') {
+                return $this->findAll()->andWhere($this->alias.'.email = :email')->setParameter('email', $value)->getQuery()->getOneOrNullResult();
+            }
         }
 
-        throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks. See exemples in other repostories or look at Akyos\CanopeeModuleSDK\Trait\RepositoryTrait to understand how it works.');
+        throw new Exception('Do not use findBy method, create your own method based on findAll to benefit from the default query with customer and deletedState checks. See exemples in other repostories or look at Akyos\CanopeeModuleSDK\Trait\RepositoryTrait to understand how it works.');
     }
 
     final public function findOneBy(array $criteria, ?array $orderBy = null)
@@ -117,9 +121,13 @@ Trait RepositoryTrait
             if ($key === 'id') {
                 return $this->findById($value)->getQuery()->getOneOrNullResult();
             }
+
+            if($key === 'email') {
+                return $this->findAll()->andWhere($this->alias.'.email = :email')->setParameter('email', $value)->getQuery()->getOneOrNullResult();
+            }
         }
 
-        throw new Exception('Do not use find, findBy and findOneBy methods, create your own method based on findAll to benefit from the default query with customer and deletedState checks. See exemples in other repostories or look at Akyos\CanopeeModuleSDK\Trait\RepositoryTrait to understand how it works.');
+        throw new Exception('Do not usefindOneBy method, create your own method based on findAll to benefit from the default query with customer and deletedState checks. See exemples in other repostories or look at Akyos\CanopeeModuleSDK\Trait\RepositoryTrait to understand how it works.');
     }
 
     final public function findById(int $id): QueryBuilder
