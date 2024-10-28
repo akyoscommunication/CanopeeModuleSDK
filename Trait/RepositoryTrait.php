@@ -104,7 +104,7 @@ Trait RepositoryTrait
             }
 
             if($key === 'email') {
-                return $this->findAll()->andWhere($this->alias.'.email = :email')->setParameter('email', $value)->getQuery()->getOneOrNullResult();
+                return $this->findAll()->andWhere($this->alias.'.email = :email')->setParameter('email', $value)->getQuery()->getResult();
             }
         }
 
