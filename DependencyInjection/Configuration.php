@@ -17,7 +17,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder
             ->getRootNode()
                 ->children()
-                    ->scalarNode('user_identifier')->defaultValue('uuid')->end()
+                    ->scalarNode('user_identifier')->defaultValue('id')->end()
                     ->arrayNode('modules')
                         ->arrayPrototype()
                             ->children()

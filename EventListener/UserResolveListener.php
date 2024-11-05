@@ -20,7 +20,7 @@ final readonly class UserResolveListener
     {
         try {
             $parameters = $this->container->getParameter('user_identifier');
-            $userIdentifier = 'uuid';
+            $userIdentifier = 'id';
             if($parameters) {
                 $userIdentifier = $parameters;
             }

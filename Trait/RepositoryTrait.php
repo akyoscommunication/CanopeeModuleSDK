@@ -98,10 +98,6 @@ Trait RepositoryTrait
     final public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null)
     {
         foreach ($criteria as $key => $value) {
-            if ($key === 'uuid') {
-                return $this->findByUuid($value)->getQuery()->getOneOrNullResult();
-            }
-
             if ($key === 'id') {
                 return $this->findById($value)->getQuery()->getOneOrNullResult();
             }
@@ -117,9 +113,6 @@ Trait RepositoryTrait
     final public function findOneBy(array $criteria, ?array $orderBy = null)
     {
         foreach ($criteria as $key => $value) {
-            if ($key === 'uuid') {
-                return $this->findByUuid($value)->getQuery()->getOneOrNullResult();
-            }
 
             if ($key === 'id') {
                 return $this->findById($value)->getQuery()->getOneOrNullResult();
@@ -140,13 +133,6 @@ Trait RepositoryTrait
             ->setParameter('id', $id)
             ->setMaxResults(1)
             ;
-    }
-
-    final public function findByUuid(string $uuid): QueryBuilder
-    {
-        return $this->findAll()
-            ->andWhere('u.uuid = :uuid')
-            ->setParameter('uuid', $uuid);
     }
 
     /// FIND ALL
