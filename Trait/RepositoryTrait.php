@@ -18,6 +18,7 @@ Trait RepositoryTrait
     private string $customerAlias = 'customer';
     private string $customerParameter = 'customer';
     private bool $performSameCustomerCheck = true;
+    private bool $performDeleteStateCheck = true;
     private ?string $deletedAlias = null;
     private ?string $deletedStateProperty = 'deletedState';
     private ?string $deletedState = 'alive';
@@ -180,7 +181,7 @@ Trait RepositoryTrait
 
     private function andWhereNotDelete(QueryBuilder $queryBuilder): QueryBuilder
     {
-        if (property_exists($this->_entityName, $this->deletedStateProperty)) {
+        if (property_exists($this->_entityName, $this->deletedStateProperty) && $this->performDeleteStateCheck) {
             $queryBuilder
                 ->andWhere(($this->deletedAlias ?? $this->alias).'.'.$this->deletedStateProperty.' = :deleted')
                 ->setParameter('deleted', $this->deletedState)
@@ -240,6 +241,18 @@ Trait RepositoryTrait
     public function setPerformSameCustomerCheck(bool $performSameCustomerCheck): static
     {
         $this->performSameCustomerCheck = $performSameCustomerCheck;
+
+        return $this;
+    }
+
+    public function getPerformDeleteStateCheck(): bool
+    {
+        return $this->performDeleteStateCheck;
+    }
+
+    public function setPerformDeleteStateCheck(bool $performDeleteStateCheck): static
+    {
+        $this->performDeleteStateCheck = $performDeleteStateCheck;
 
         return $this;
     }
