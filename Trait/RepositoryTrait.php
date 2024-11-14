@@ -100,7 +100,7 @@ Trait RepositoryTrait
     {
         foreach ($criteria as $key => $value) {
             if ($key === 'id') {
-                return $this->findById($value)->getQuery()->getOneOrNullResult();
+                return $this->findById((int)$value)->getQuery()->getOneOrNullResult();
             }
 
             if($key === 'email') {
@@ -116,7 +116,7 @@ Trait RepositoryTrait
         foreach ($criteria as $key => $value) {
 
             if ($key === 'id') {
-                return $this->findById($value)->getQuery()->getOneOrNullResult();
+                return $this->findById((int)$value)->getQuery()->getOneOrNullResult();
             }
 
             if($key === 'email') {
@@ -145,12 +145,16 @@ Trait RepositoryTrait
 
     final protected function defaultQuery(): QueryBuilder
     {
-        $this->defineCustomer();
+        if($this->security->getUser() && !$this->security->isGranted('ROLE_SUPER_ADMIN')) {
+            $this->defineCustomer();
+        }
         $queryBuilder = $this->createQueryBuilder($this->alias);
         $queryBuilder = $this->commonJoins($queryBuilder);
         $queryBuilder = $this->andWhereNotDelete($queryBuilder);
-        $queryBuilder = $this->defineCustomerAlias($queryBuilder);
-        $queryBuilder = $this->andWhereCustomer($queryBuilder);
+        if($this->security->getUser() && !$this->security->isGranted('ROLE_SUPER_ADMIN')) {
+            $queryBuilder = $this->defineCustomerAlias($queryBuilder);
+            $queryBuilder = $this->andWhereCustomer($queryBuilder);
+        }
         $queryBuilder = $this->addOrderBy($queryBuilder);
 
         return $queryBuilder;
