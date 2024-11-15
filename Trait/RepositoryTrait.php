@@ -3,6 +3,7 @@
 namespace Akyos\CanopeeModuleSDK\Trait;
 
 use App\Entity\Customer;
+use App\Entity\User;
 use App\Entity\UserAccessRight;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
