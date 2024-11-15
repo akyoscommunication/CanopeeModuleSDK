@@ -129,6 +129,7 @@ Trait RepositoryTrait
 
     final public function findById(int $id): QueryBuilder
     {
+        if($this->_entityName === User::class) { $this->performSameCustomerCheck = false; }
         return $this->findAll()
             ->andWhere($this->alias.'.id = :id')
             ->setParameter('id', $id)
@@ -145,16 +146,12 @@ Trait RepositoryTrait
 
     final protected function defaultQuery(): QueryBuilder
     {
-        if($this->security->getUser() && !$this->security->isGranted('ROLE_SUPER_ADMIN')) {
-            $this->defineCustomer();
-        }
+        $this->defineCustomer();
         $queryBuilder = $this->createQueryBuilder($this->alias);
         $queryBuilder = $this->commonJoins($queryBuilder);
         $queryBuilder = $this->andWhereNotDelete($queryBuilder);
-        if($this->security->getUser() && !$this->security->isGranted('ROLE_SUPER_ADMIN')) {
-            $queryBuilder = $this->defineCustomerAlias($queryBuilder);
-            $queryBuilder = $this->andWhereCustomer($queryBuilder);
-        }
+        $queryBuilder = $this->defineCustomerAlias($queryBuilder);
+        $queryBuilder = $this->andWhereCustomer($queryBuilder);
         $queryBuilder = $this->addOrderBy($queryBuilder);
 
         return $queryBuilder;
