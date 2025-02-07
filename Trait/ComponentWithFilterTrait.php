@@ -93,7 +93,7 @@ trait ComponentWithFilterTrait
             'translation_domain' => $this->getDefaultTransDomain(),
         ]);
         foreach ($this->getFilters() as $filter) {
-            $form->add($filter->getName(), $filter->getType(), array_merge($filter->getOptions(), ['attr' => array_merge($filter->getOptions()['attr'] ?? [], ['data-action' => 'live#action','data-live-action-param' => 'updateFilters'])]));
+            $form->add($filter->getName(), $filter->getType(), array_merge($filter->getOptions(), ['attr' => array_merge($filter->getOptions()['attr'] ?? [], ['data-action' => 'live#action','data-live-action-param' => 'updateFilters', 'data-model' => 'values.'.$filter->getName()])]));
         }
 
         return $form->createView();
