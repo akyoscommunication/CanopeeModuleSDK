@@ -151,7 +151,7 @@ class ProviderService
         }
 
         if ($_SERVER['APP_ENV'] !== 'test') {
-            $userToken = $this->userTokenRepository->findOneBy(['user' => $this->user, 'module' => $this->target]);
+            $userToken = $this->userTokenRepository->findOneBy(['user' => $this->user, 'module' => $this->target], ['createdAt' => 'DESC']);
             if(!$userToken) {
                 $userToken = $this->newUserToken($this->user);
             }
