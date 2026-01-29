@@ -12,6 +12,8 @@ services:
       - './../../Class'
     tags: [ 'controller.service_arguments' ]
     public: true
+    autowire: true
+    autoconfigure: true
 
   Akyos\CanopeeModuleSDK\EventListener\UserResolveListener:
     arguments:
