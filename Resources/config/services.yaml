@@ -1,20 +1,30 @@
 services:
-    Symfony\Component\DependencyInjection\ContainerInterface: '@service_container'
+  Symfony\Component\DependencyInjection\ContainerInterface: '@service_container'
 
-    _defaults:
-        autowire: true
-        autoconfigure: true
+  _defaults:
+    autowire: true
+    autoconfigure: true
 
-    Akyos\CanopeeModuleSDK\:
-        resource: './../../*'
-        exclude:
-            - './../../Translation'
-            - './../../Class'
-        tags: [ 'controller.service_arguments' ]
-        public: true
+  Akyos\CanopeeModuleSDK\:
+    resource: './../../*'
+    exclude:
+      - './../../Translation'
+      - './../../Class'
+    tags: [ 'controller.service_arguments' ]
+    public: true
 
-    Akyos\CanopeeModuleSDK\EventListener\UserResolveListener:
-        arguments:
-            - '@App\Repository\UserRepository'
-        tags:
-            - { name: kernel.event_listener, event: league.oauth2_server.event.user_resolve, method: onUserResolve }
+  Akyos\CanopeeModuleSDK\EventListener\UserResolveListener:
+    arguments:
+      - '@App\Repository\UserRepository'
+    tags:
+      - { name: kernel.event_listener, event: league.oauth2_server.event.user_resolve, method: onUserResolve }
+
+  # Infrastructure notifier du bundle
+  Akyos\CanopeeModuleSDK\Service\Notifier\NotifierScanner:
+    arguments:
+      $notifierServices: !tagged_iterator app.notifier
+
+  Akyos\CanopeeModuleSDK\Service\Notifier\NotifierExecutor:
+    arguments:
+      $notifierLocator: !tagged_locator app.notifier
+      $argumentResolvers: !tagged_iterator app.notifier_argument_resolver
