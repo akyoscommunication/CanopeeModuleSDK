@@ -9,8 +9,7 @@ class Notifier
 {
     public function __construct(
         public string $name,
-        public string $description = '',
-        public ?array $requirements = [],
+        public string $description = ''
     )
     {
     }
