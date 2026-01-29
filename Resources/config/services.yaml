@@ -10,10 +10,10 @@ services:
     exclude:
       - './../../Translation'
       - './../../Class'
+      - './../../Attribute'
     tags: [ 'controller.service_arguments' ]
     public: true
-    autowire: true
-    autoconfigure: true
+
 
   Akyos\CanopeeModuleSDK\EventListener\UserResolveListener:
     arguments:
