@@ -28,8 +28,7 @@ readonly class NotifierScanner
                         'serviceId' => $reflectionClass->getName(),
                         'method' => $method->getName(),
                         'name' => $instance->name,
-                        'description' => $instance->description,
-                        'requirements' => $instance->requirements,
+                        'description' => $instance->description
                     ];
                 }
             }

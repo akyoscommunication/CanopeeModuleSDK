@@ -25,8 +25,7 @@ Exemple :
 ```php
 #[Notifier(
     name: 'notifier.event.reminder_manager.name',
-    description: 'notifier.event.reminder_manager.description',
-    : ['event', 'log']
+    description: 'notifier.event.reminder_manager.description'
 )]
 public function notifyEventReminderManager(Event $event, $log): void
 {
